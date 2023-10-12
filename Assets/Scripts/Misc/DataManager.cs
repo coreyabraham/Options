@@ -17,25 +17,33 @@ public class DataManager
         }
     }
 
-    public void SaveData(int data)
+    public void SaveData(string key, int data)
     {
 
     }
 
-    public void SaveData(float data)
+    public void SaveData(string key, float data)
     {
 
     }
 
-    public void SaveData(bool data)
+    public void SaveData(string key, bool data)
     {
 
     }
 
-    public void SaveData(string data)
+    public void SaveData(string key, string data)
     {
 
     }
 
+    public void GetData(string key)
+    {
 
+    }
+
+    public void ResetData()
+    {
+
+    }
 }

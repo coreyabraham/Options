@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class FrameManager : MonoBehaviour
@@ -15,6 +16,9 @@ public class FrameManager : MonoBehaviour
             return;
         }
 
+        if (currentFrame == null)
+            currentFrame = mainFrame;
+
         if (previousFrame == null)
             previousFrame = mainFrame;
 
@@ -23,27 +27,12 @@ public class FrameManager : MonoBehaviour
 
     public void OnClick(GameObject frame, bool hidePreviousFrame)
     {
-        if (frame == mainFrame && currentFrame != null)
-        {
-            mainFrame.SetActive(true);
-
-            currentFrame.SetActive(false);
-            currentFrame = null;
-            
-            return;
-        }
-
-        if (currentFrame != null)
-            return;
-
         frame.SetActive(true);
 
-        if (currentFrame != null)
-            previousFrame = currentFrame;
-        
-        currentFrame = frame;
-
-        if (previousFrame.activeSelf && hidePreviousFrame)
+        if (hidePreviousFrame && previousFrame != null)
             previousFrame.SetActive(false);
+
+        currentFrame = frame;
+        previousFrame = currentFrame;
     }
 }

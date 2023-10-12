@@ -22,7 +22,13 @@ public class ButtonManager : MonoBehaviour
         }
 
         FrameManager fm = GetComponentInParent<FrameManager>();
-        Debug.Log(fm);
+
+        if (fm == null)
+        {
+            Debug.LogWarning("Class: 'FrameManager' cannot be found in current scene, please fix!");
+            return;
+        }
+
         button.onClick.AddListener(delegate { fm.OnClick(frame, hidePreviousFrame ); });
     }
 }

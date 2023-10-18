@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,21 +21,68 @@ public class SettingsManager : MonoBehaviour
 
     [Header("Setup")]
     public TMP_Text title;
-    public TMP_Dropdown resDropdown;
     public Settings settings;
-    
+
+    [Header("Values - Audio")]
+    public SliderManager masterVolumeSlider;
+    public SliderManager soundVolumeSlider;
+    public SliderManager musicVolumeSlider;
+
+    [Header("Values - Video")]
+    public CheckboxManager fullscreenCheckbox;
+    public DropdownManager resolutionDropdown;
+    public SliderManager hudScaleSlider;
+
     private GameObject currentFrame;
     private GameObject previousFrame;
 
     #region CurrentVariables
 
-    private float currentMasterVolume;
-    private float currentSoundVolume;
-    private float currentMusicVolume;
+    private int currentMasterVolume;
+    private int currentSoundVolume;
+    private int currentMusicVolume;
 
     private int currentResolution;
     private bool currentFullscreen;
     private float currentHudScale;
+
+    #endregion
+
+    #region Menu Controls
+    
+    private void masterVolumeChanged(float value)
+    {
+        currentMasterVolume = (int)Math.Round(value);
+        Debug.Log(currentMasterVolume);
+    }
+
+    private void soundVolumeChanged(float value)
+    {
+        currentSoundVolume = (int)Math.Round(value);
+        Debug.Log(currentSoundVolume);
+    }
+
+    private void musicVolumeChanged(float value)
+    {
+        currentMusicVolume = (int)Math.Round(value);
+        Debug.Log(value);
+    }
+
+    private void fullscreenChanged(bool fullscreen)
+    {
+        Debug.Log(fullscreen);
+    }
+
+    private void resolutionChanged(int resolution)
+    {
+        currentResolution = resolution;
+        Debug.Log(resolution);
+    }
+
+    private void hudScaleChanged(float scale)
+    {
+        Debug.Log(scale);
+    }
 
     #endregion
 
@@ -52,7 +102,26 @@ public class SettingsManager : MonoBehaviour
         title.text = "Settings - " + currentFrame.name;
     }
 
-    void Start()
+    private void PostInitSetup()
+    {
+        masterVolumeSlider.slider.value = settings.baseSettings.masterVolume;
+        soundVolumeSlider.slider.value = settings.baseSettings.soundVolume;
+        musicVolumeSlider.slider.value = settings.baseSettings.musicVolume;
+
+        currentMasterVolume = settings.baseSettings.masterVolume;
+        currentSoundVolume = settings.baseSettings.soundVolume;
+        currentMusicVolume = settings.baseSettings.musicVolume;
+
+        masterVolumeSlider.slider.onValueChanged.AddListener(masterVolumeChanged);
+        soundVolumeSlider.slider.onValueChanged.AddListener(soundVolumeChanged);
+        musicVolumeSlider.slider.onValueChanged.AddListener(musicVolumeChanged);
+
+        fullscreenCheckbox.toggle.onValueChanged.AddListener(fullscreenChanged);
+        resolutionDropdown.dropdown.onValueChanged.AddListener(resolutionChanged);
+        hudScaleSlider.slider.onValueChanged.AddListener(hudScaleChanged);
+    }
+
+    public void Initilize()
     {
         currentFrame = targets[0].Frame;
         title.text = "Settings - " + currentFrame.name;
@@ -77,18 +146,18 @@ public class SettingsManager : MonoBehaviour
             if (matchingResolutions)
             {
                 currentResolution = i;
-                settings.resolution = currentResolution;
+                settings.baseSettings.resolution = currentResolution;
             }
         }
 
-        if (resDropdown.options.Count > 0)
-            resDropdown.ClearOptions();
+        if (resolutionDropdown.dropdown.options.Count > 0)
+            resolutionDropdown.dropdown.ClearOptions();
 
-        resDropdown.value = settings.resolution;
+        resolutionDropdown.dropdown.value = settings.baseSettings.resolution;
 
-        resDropdown.AddOptions(options);
-        resDropdown.RefreshShownValue();
+        resolutionDropdown.dropdown.AddOptions(options);
+        resolutionDropdown.dropdown.RefreshShownValue();
 
-        //resDropdown.onValueChanged.AddListener();
+        PostInitSetup();
     }
 }

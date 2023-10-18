@@ -8,7 +8,7 @@ public class DropdownManager : MonoBehaviour
 {
     public TMP_Dropdown dropdown;
     public bool ignoreListables;
-    public List<TMP_Dropdown.OptionData> listables = new List<TMP_Dropdown.OptionData>();
+    public List<TMP_Dropdown.OptionData> listables = new();
 
     void Start()
     {

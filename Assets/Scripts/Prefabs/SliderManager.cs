@@ -6,15 +6,24 @@ public class SliderManager : MonoBehaviour
 {
     public Slider slider;
     public TMP_InputField inputField;
+    public bool usePercentage;
 
     private void sliderUpdated(float newValue)
     {
-        inputField.text = newValue.ToString() + "%";
+        string endStr = "%";
+        if (!usePercentage)
+            endStr = string.Empty;
+
+        inputField.text = newValue.ToString() + endStr;
     }
 
     private void fieldUpdated(string newValue)
     {
-        inputField.text = newValue + "%";
+        string endStr = "%";
+        if (!usePercentage)
+            endStr = string.Empty;
+
+        inputField.text = newValue + endStr;
         float.TryParse(newValue, out float result);
 
         if (result > slider.maxValue)
@@ -28,6 +37,12 @@ public class SliderManager : MonoBehaviour
 
     private void Start()
     {
+        string endStr = "%";
+        if (!usePercentage)
+            endStr = string.Empty;
+
+        inputField.text = slider.minValue.ToString() + endStr;
+        
         slider.onValueChanged.AddListener(sliderUpdated);
         inputField.onEndEdit.AddListener(fieldUpdated);
     }

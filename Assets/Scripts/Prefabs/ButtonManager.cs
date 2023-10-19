@@ -6,18 +6,23 @@ public class ButtonManager : MonoBehaviour
     public Button button;
     public GameObject frame;
     public bool hidePreviousFrame;
+    public bool silenceDebug;
 
     void Start()
     {
         if (button == null)
         {
-            Debug.LogWarning("Variable: 'Button' with name: 'button' in Object: " + name + " needs to be specified!");
+            if (!silenceDebug)
+                Debug.LogWarning("Variable: 'Button' with name: 'button' in Object: " + name + " needs to be specified!");
+            
             return;
         }
 
         if (frame == null)
         {
-            Debug.LogWarning("Variable: 'GameObject' with name: 'frame' in Object: " + name + " needs to be specified!");
+            if (!silenceDebug)
+                Debug.LogWarning("Variable: 'GameObject' with name: 'frame' in Object: " + name + " needs to be specified!");
+            
             return;
         }
 
@@ -25,7 +30,9 @@ public class ButtonManager : MonoBehaviour
 
         if (fm == null)
         {
-            Debug.LogWarning("Class: 'FrameManager' cannot be found in current scene, please fix!");
+            if (!silenceDebug)
+                Debug.LogWarning("Class: 'FrameManager' cannot be found in current scene, please fix!");
+            
             return;
         }
 

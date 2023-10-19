@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.Events;
 
 using System.IO;
-using System.IO.Enumeration;
 
 [System.Serializable]
 public class BaseSettings
@@ -15,7 +14,7 @@ public class BaseSettings
     [Header("Video")]
     public int resolution; // 0+
     public bool fullscreen;
-    public float hudScale; // 0.00 - 1.00
+    public int hudScale; // 100% - 200%
 }
 
 public class Settings : MonoBehaviour
@@ -26,7 +25,12 @@ public class Settings : MonoBehaviour
     [Header("Miscellanous")]
     public string fileName = "SettingsData.json";
     private string filePath;
+
+    [Header("Events")]
     public UnityEvent initalizeEvent;
+
+    [Header("Debugging")]
+    public bool deleteFileOnStart;
 
     [HideInInspector] public Resolution[] resolutions;
 
@@ -37,9 +41,23 @@ public class Settings : MonoBehaviour
 
     [HideInInspector] public int defaultResolution;
     [HideInInspector] public bool defaultFullscreen;
-    [HideInInspector] public float defaultHudScale;
+    [HideInInspector] public int defaultHudScale;
 
-    public void SetDefaults()
+    public void ApplyChanges(BaseSettings newerSettings)
+    {
+        if (newerSettings == baseSettings)
+        {
+            Debug.LogWarning("No Additional Changes have been made, skipping...");
+            return;
+        }
+
+        baseSettings = newerSettings;
+        
+        DataManager dataInst = new();
+        dataInst.SaveAllData(baseSettings, filePath);
+    }
+
+    private void SetDefaults()
     {
         defaultMasterVolume = baseSettings.masterVolume;
         defaultSoundVolume = baseSettings.soundVolume;
@@ -59,6 +77,14 @@ public class Settings : MonoBehaviour
         DataManager dataInst = new();
         #endregion
 
+        #region Debugging
+        if (deleteFileOnStart && File.Exists(filePath))
+        {
+            Debug.LogWarning("Debug Deletion Enabled, Deleting: " + filePath);
+            File.Delete(filePath);
+        }
+        #endregion
+
         #region Read Data
         if (!File.Exists(filePath))
         {
@@ -74,7 +100,7 @@ public class Settings : MonoBehaviour
         #endregion
     }
 
-    void Start()
+    private void Start()
     {
         resolutions = Screen.resolutions;
 

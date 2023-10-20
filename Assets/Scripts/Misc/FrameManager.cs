@@ -3,10 +3,13 @@ using TMPro;
 
 public class FrameManager : MonoBehaviour
 {
+    [Header("Main")]
     public GameObject mainFrame;
-    public KeyCode debugClose;
     public TMP_Text closeLabel;
+
+    [Header("Debug")]
     public bool silenceDebug;
+    public KeyCode debugClose;
     
     [HideInInspector] public GameObject currentFrame;
     [HideInInspector] public GameObject previousFrame;

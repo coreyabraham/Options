@@ -14,12 +14,11 @@ public class BaseSettings
     [Header("Video")]
     public int resolution; // 0+
     public bool fullscreen;
-    public int hudScale; // 100% - 200%
+    public float hudScale; // 0.00 - 1.00
 }
 
 public class Settings : MonoBehaviour
 {
-    [SerializeField]
     public BaseSettings baseSettings;
 
     [Header("Miscellanous")]
@@ -41,7 +40,7 @@ public class Settings : MonoBehaviour
 
     [HideInInspector] public int defaultResolution;
     [HideInInspector] public bool defaultFullscreen;
-    [HideInInspector] public int defaultHudScale;
+    [HideInInspector] public float defaultHudScale;
 
     public void ApplyChanges(BaseSettings newerSettings)
     {
@@ -52,7 +51,6 @@ public class Settings : MonoBehaviour
         }
 
         baseSettings = newerSettings;
-        
         DataManager dataInst = new();
         dataInst.SaveAllData(baseSettings, filePath);
     }
@@ -73,19 +71,24 @@ public class Settings : MonoBehaviour
         SetDefaults();
 
         #region Setup
+
         filePath = Application.persistentDataPath + "\\" + fileName;
         DataManager dataInst = new();
+
         #endregion
 
         #region Debugging
+
         if (deleteFileOnStart && File.Exists(filePath))
         {
             Debug.LogWarning("Debug Deletion Enabled, Deleting: " + filePath);
             File.Delete(filePath);
         }
+
         #endregion
 
         #region Read Data
+
         if (!File.Exists(filePath))
         {
             Debug.Log("SettingsData.json file has been created in Directory: " + Application.persistentDataPath + "\\");
@@ -97,6 +100,7 @@ public class Settings : MonoBehaviour
             string jsonFileContents = File.ReadAllText(filePath);
             baseSettings = dataInst.GetData(jsonFileContents);
         }
+
         #endregion
     }
 

@@ -2,11 +2,17 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+using System;
+
 public class SliderManager : MonoBehaviour
 {
     [Header("Inputs")]
     public Slider slider;
     public TMP_InputField inputField;
+
+    [Header("Rounding")]
+    public bool useRounding;
+    public int roundToSig;
 
     [Header("Miscellaneous")]
     public bool usePercentage;
@@ -17,6 +23,9 @@ public class SliderManager : MonoBehaviour
         string endStr = "%";
         if (!usePercentage)
             endStr = string.Empty;
+
+        if (useRounding)
+            newValue = (float)Math.Round(newValue, roundToSig);
 
         inputField.text = newValue.ToString() + endStr;
     }
@@ -35,6 +44,9 @@ public class SliderManager : MonoBehaviour
 
         if (result < slider.minValue)
             result = slider.minValue;
+
+        if (useRounding)
+             result = (float)Math.Round(result, roundToSig);
 
         slider.value = result;
     }

@@ -1,8 +1,10 @@
-using TMPro;
+using System;
+
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
-using System;
+using TMPro;
 
 public class SliderManager : MonoBehaviour
 {
@@ -17,6 +19,10 @@ public class SliderManager : MonoBehaviour
     [Header("Miscellaneous")]
     public bool usePercentage;
     public bool skipFormatting;
+
+    [Header("Events")]
+    public UnityEvent onPointerDown;
+    public UnityEvent onPointerUp;
 
     private void sliderUpdated(float newValue)
     {

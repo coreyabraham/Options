@@ -926,6 +926,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slider: {fileID: 4175407253437172086}
   inputField: {fileID: 1823489449904383127}
+  useRounding: 0
+  roundToSig: 0
+  usePercentage: 0
+  skipFormatting: 0
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11500000, guid: 2aa7ed4212b97ff48a3f7cad7531ea37, type: 3}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onPointerUp:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11500000, guid: 2aa7ed4212b97ff48a3f7cad7531ea37, type: 3}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7822393545892911029
 GameObject:
   m_ObjectHideFlags: 0

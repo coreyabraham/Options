@@ -2,14 +2,15 @@ using UnityEngine;
 using UnityEngine.Events;
 
 using System.IO;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class BaseSettings
 {
-    [Header("Audio")] // 0 - 100
-    public int masterVolume;
-    public int soundVolume;
-    public int musicVolume;
+    [Header("Audio")] // 0.0001 - 1
+    public float masterVolume;
+    public float soundVolume;
+    public float musicVolume;
 
     [Header("Video")]
     public int resolution; // 0+
@@ -34,9 +35,9 @@ public class Settings : MonoBehaviour
     [HideInInspector] public Resolution[] resolutions;
 
     // DEFAULTS //
-    [HideInInspector] public int defaultMasterVolume;
-    [HideInInspector] public int defaultSoundVolume;
-    [HideInInspector] public int defaultMusicVolume;
+    [HideInInspector] public float defaultMasterVolume;
+    [HideInInspector] public float defaultSoundVolume;
+    [HideInInspector] public float defaultMusicVolume;
 
     [HideInInspector] public int defaultResolution;
     [HideInInspector] public bool defaultFullscreen;

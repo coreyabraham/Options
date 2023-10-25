@@ -1,11 +1,9 @@
 using UnityEngine;
-using TMPro;
 
 public class FrameManager : MonoBehaviour
 {
     [Header("Main")]
     public GameObject mainFrame;
-    public TMP_Text closeLabel;
 
     [Header("Debug")]
     public bool silenceDebug;
@@ -16,11 +14,6 @@ public class FrameManager : MonoBehaviour
 
     private void Start()
     {
-        if (closeLabel != null)
-        {
-            closeLabel.text = "To Quit, Press the '" + debugClose.ToString() + "' Key!";
-        }
-
         if (mainFrame == null)
         {
             if (!silenceDebug)

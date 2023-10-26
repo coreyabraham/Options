@@ -1,5 +1,3 @@
-#pragma warning disable IDE0051 // Remove unused private members
-
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -7,11 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 using TMPro;
 
-public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class SettingsManager : MonoBehaviour
 {
     [Serializable]
     public class Target
@@ -24,6 +21,10 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public class Events
     {
         public string eventName;
+
+        public string promptTitle;
+        public string promptBody;
+
         public UnityEvent acceptedEvent;
         public UnityEvent deniedEvent;
     }
@@ -31,8 +32,8 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     #region Unity Inspector
 
     [Header("Frames and Buttons")]
-    public List<Target> targets = new List<Target>();
     public PromptManager promptFrame;
+    public List<Target> targets = new();
 
     [Header("Confirm / Deny")]
     public ActionButtonManager applyBtn;
@@ -47,10 +48,12 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public SliderManager masterVolumeSlider;
     public SliderManager soundVolumeSlider;
     public SliderManager musicVolumeSlider;
+    public AudioSource testSound;
 
     [Header("Values - Video")]
     public CheckboxManager fullscreenCheckbox;
     public DropdownManager resolutionDropdown;
+    public DropdownManager qualityDropdown;
     public SliderManager hudScaleSlider;
 
     [Header("Audio Mixer Groups")]
@@ -78,6 +81,7 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     private float currentMusicVolume;
 
     private int currentResolution;
+    private int currentQuality;
     private bool currentFullscreen;
     private float currentHudScale;
 
@@ -103,8 +107,6 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
         #region Settings Finalizing
 
-        Debug.Log(currentMusicVolume);
-
         BaseSettings newerSettings = new()
         {
             masterVolume = currentMasterVolume,
@@ -112,6 +114,7 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             musicVolume = currentMusicVolume,
 
             resolution = currentResolution,
+            quality = currentQuality,
             fullscreen = currentFullscreen,
             hudScale = currentHudScale
         };
@@ -132,6 +135,7 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         currentMusicVolume = settings.defaultMusicVolume;
 
         currentResolution = settings.defaultResolution;
+        currentQuality = settings.defaultQuality;
         currentFullscreen = settings.defaultFullscreen;
         currentHudScale = settings.defaultHudScale;
 
@@ -144,6 +148,7 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         musicVolumeSlider.slider.value = currentMusicVolume;
 
         resolutionDropdown.dropdown.value = currentResolution;
+        qualityDropdown.dropdown.value = currentQuality;
         fullscreenCheckbox.toggle.isOn = currentFullscreen;
         hudScaleSlider.slider.value = currentHudScale;
 
@@ -180,16 +185,14 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
     #region Prompt Functions
 
-    public void OnPromptFrame(string eventName)
+    public void OnPromptFrame(string title, string body, string eventName)
     {
-        promptFrame.HookButtons(eventName);
-        promptFrame.SetEvent(passthroughEvent);
-        promptFrame.SetFrameVisibility(true);
+        promptFrame.StartPrompt(title, body, eventName, passthroughEvent);
     }
 
     public void PromptResultReceived(bool result, string eventName)
     {
-        promptFrame.SetFrameVisibility(false);
+        // visibility and unhooking of buttons happen automatically as of now!
 
         foreach (Events i in applicableEvents)
         {
@@ -205,20 +208,6 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
                 unityEvent.Invoke();
             }
         }
-    }
-
-    #endregion
-
-    #region Event Functions
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        Debug.Log("Object Grabbed");
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        Debug.Log("Object Let Go");
     }
 
     #endregion
@@ -241,6 +230,10 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     {
         currentSoundVolume = value;
         gameMixer.SetFloat(mixerValues[1], AudioSliderCalculations(value));
+
+        // This may need to be adjusted!
+        if (!testSound.isPlaying)
+            testSound.Play();
     }
 
     private void MusicSliderChanged(float value)
@@ -259,6 +252,12 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     #endregion
 
     #region Private Functions
+
+    private void QualityChanged(int value)
+    {
+        currentQuality = value;
+        QualitySettings.SetQualityLevel(value);
+    }
 
     private void SetupResolutions()
     {
@@ -312,6 +311,12 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             0,
             settings.resolutions.Length - 1
             );
+
+        settings.baseSettings.quality = Mathf.Clamp(
+            settings.baseSettings.quality,
+            0,
+            qualityDropdown.dropdown.options.Count
+            );
     }
 
     private void PostInitSetup()
@@ -320,14 +325,17 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         soundVolumeSlider.slider.value = settings.baseSettings.soundVolume;
         musicVolumeSlider.slider.value = settings.baseSettings.musicVolume;
 
-        masterVolumeSlider.inputField.text = settings.baseSettings.masterVolume.ToString() + "%";
-        soundVolumeSlider.inputField.text = settings.baseSettings.soundVolume.ToString() + "%";
-        musicVolumeSlider.inputField.text = settings.baseSettings.musicVolume.ToString() + "%";
+        masterVolumeSlider.inputField.text = settings.baseSettings.masterVolume.ToString();
+        soundVolumeSlider.inputField.text = settings.baseSettings.soundVolume.ToString();
+        musicVolumeSlider.inputField.text = settings.baseSettings.musicVolume.ToString();
+
+        qualityDropdown.dropdown.value = settings.baseSettings.quality;
+        QualitySettings.SetQualityLevel(settings.baseSettings.quality);
 
         fullscreenCheckbox.toggle.isOn = settings.baseSettings.fullscreen;
 
         hudScaleSlider.slider.value = settings.baseSettings.hudScale;
-        hudScaleSlider.inputField.text = settings.baseSettings.hudScale.ToString() + "%";
+        hudScaleSlider.inputField.text = settings.baseSettings.hudScale.ToString();
         HudScaleSliderChanged(hudScaleSlider.slider.value);
 
         currentMasterVolume = settings.baseSettings.masterVolume;
@@ -348,11 +356,11 @@ public class SettingsManager : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
         fullscreenCheckbox.toggle.onValueChanged.AddListener((bool value) => { currentFullscreen = value; });
         resolutionDropdown.dropdown.onValueChanged.AddListener((int value) => { currentResolution = value; });
+        qualityDropdown.dropdown.onValueChanged.AddListener(QualityChanged);
         hudScaleSlider.slider.onValueChanged.AddListener(HudScaleSliderChanged);
 
-        // currently hard-coded for the moment, this will be fixed in due time!
-        applyBtn.button.onClick.AddListener(() => { OnPromptFrame("apply"); });
-        revertBtn.button.onClick.AddListener(() => { OnPromptFrame("revert"); });
+        applyBtn.button.onClick.AddListener(() => { OnPromptFrame(applicableEvents[0].promptTitle, applicableEvents[0].promptBody, applicableEvents[0].eventName); });
+        revertBtn.button.onClick.AddListener(() => { OnPromptFrame(applicableEvents[1].promptTitle, applicableEvents[1].promptBody, applicableEvents[1].eventName); });
     }
 
     #endregion

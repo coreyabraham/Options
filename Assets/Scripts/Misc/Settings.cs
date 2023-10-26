@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+using System;
 using System.IO;
-using System.Collections.Generic;
 
-[System.Serializable]
+[Serializable]
 public class BaseSettings
 {
     [Header("Audio")] // 0.0001 - 1
@@ -14,6 +14,7 @@ public class BaseSettings
 
     [Header("Video")]
     public int resolution; // 0+
+    public int quality; // 0+
     public bool fullscreen;
     public float hudScale; // 0.00 - 1.00
 }
@@ -40,6 +41,7 @@ public class Settings : MonoBehaviour
     [HideInInspector] public float defaultMusicVolume;
 
     [HideInInspector] public int defaultResolution;
+    [HideInInspector] public int defaultQuality;
     [HideInInspector] public bool defaultFullscreen;
     [HideInInspector] public float defaultHudScale;
 
@@ -53,6 +55,7 @@ public class Settings : MonoBehaviour
 
         baseSettings = newerSettings;
         DataManager dataInst = new();
+
         dataInst.SaveAllData(baseSettings, filePath);
     }
 
@@ -63,6 +66,7 @@ public class Settings : MonoBehaviour
         defaultMusicVolume = baseSettings.musicVolume;
 
         defaultResolution = baseSettings.resolution;
+        defaultQuality = baseSettings.quality;
         defaultFullscreen = baseSettings.fullscreen;
         defaultHudScale = baseSettings.hudScale;
     }
@@ -111,12 +115,9 @@ public class Settings : MonoBehaviour
 
         ManageData();
 
-        if (initalizeEvent == null)
-        {
-            Debug.LogWarning("Initalize Event Empty, cannot invoke said event!");
-            return;
-        }
-
-        initalizeEvent.Invoke();
+        if (initalizeEvent != null)
+            initalizeEvent.Invoke();
+        else
+            Debug.LogWarning("Initalize Event Empty, cannot invoke an empty event!");
     }
 }

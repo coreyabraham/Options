@@ -20,10 +20,6 @@ public class SliderManager : MonoBehaviour
     public bool usePercentage;
     public bool skipFormatting;
 
-    [Header("Events")]
-    public UnityEvent onPointerDown;
-    public UnityEvent onPointerUp;
-
     private void sliderUpdated(float newValue)
     {
         string endStr = "%";

@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using System;
 using UnityEngine;
 
 public class FrameManager : MonoBehaviour
@@ -9,8 +11,19 @@ public class FrameManager : MonoBehaviour
     public bool silenceDebug;
     public KeyCode debugClose;
     
-    [HideInInspector] public GameObject currentFrame;
-    [HideInInspector] public GameObject previousFrame;
+    private GameObject currentFrame;
+    private GameObject previousFrame;
+
+    public void OnClick(GameObject frame, bool hidePreviousFrame)
+    {
+        frame.SetActive(true);
+
+        if (hidePreviousFrame && previousFrame != null)
+            previousFrame.SetActive(false);
+
+        currentFrame = frame;
+        previousFrame = currentFrame;
+    }
 
     private void Start()
     {
@@ -42,16 +55,5 @@ public class FrameManager : MonoBehaviour
 #endif
 
         Application.Quit();
-    }
-
-    public void OnClick(GameObject frame, bool hidePreviousFrame)
-    {
-        frame.SetActive(true);
-
-        if (hidePreviousFrame && previousFrame != null)
-            previousFrame.SetActive(false);
-
-        currentFrame = frame;
-        previousFrame = currentFrame;
     }
 }

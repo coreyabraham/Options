@@ -1147,12 +1147,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841a160bcf5fd9c49b092b6a24e50f16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptFrame: {fileID: 1192902698}
   targets:
   - Frame: {fileID: 1782605032}
     Action: {fileID: 922484155}
   - Frame: {fileID: 1601690712}
     Action: {fileID: 1937065980}
-  promptFrame: {fileID: 1192902698}
   applyBtn: {fileID: 1766755397}
   revertBtn: {fileID: 1894051986}
   title: {fileID: 366935208}
@@ -2131,7 +2131,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

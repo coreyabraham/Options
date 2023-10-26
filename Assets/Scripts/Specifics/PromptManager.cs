@@ -33,8 +33,8 @@ public class PromptManager : MonoBehaviour
 
     public void UnhookButtons()
     {
-        acceptBtn.button.onClick.RemoveListener(() => { HandleInteraction(true, currentEventName); });
-        denyBtn.button.onClick.RemoveListener(() => { HandleInteraction(false, currentEventName); });
+        acceptBtn.button.onClick.RemoveAllListeners();
+        denyBtn.button.onClick.RemoveAllListeners();
 
         currentEventName = string.Empty;
     }

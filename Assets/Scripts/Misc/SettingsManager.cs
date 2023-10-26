@@ -10,6 +10,10 @@ using TMPro;
 
 public class SettingsManager : MonoBehaviour
 {
+    #region All Definitions
+
+    #region Classes
+
     [Serializable]
     public class Target
     {
@@ -28,6 +32,8 @@ public class SettingsManager : MonoBehaviour
         public UnityEvent acceptedEvent;
         public UnityEvent deniedEvent;
     }
+
+    #endregion
 
     #region Unity Inspector
 
@@ -87,14 +93,12 @@ public class SettingsManager : MonoBehaviour
 
     #endregion
 
+    #endregion
+
     #region Base Buttons
 
     public void ApplySettings()
     {
-        #region Audio Adjustments
-
-        #endregion
-
         #region Video Adjustments
 
 #if UNITY_EDITOR

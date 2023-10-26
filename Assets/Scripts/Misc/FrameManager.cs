@@ -1,5 +1,3 @@
-using Newtonsoft.Json.Linq;
-using System;
 using UnityEngine;
 
 public class FrameManager : MonoBehaviour
@@ -9,7 +7,6 @@ public class FrameManager : MonoBehaviour
 
     [Header("Debug")]
     public bool silenceDebug;
-    public KeyCode debugClose;
     
     private GameObject currentFrame;
     private GameObject previousFrame;
@@ -43,17 +40,5 @@ public class FrameManager : MonoBehaviour
 
         if (!silenceDebug)
             Debug.Log("Initalization Success!");
-    }
-
-    private void Update()
-    {
-        if (!Input.GetKeyDown(debugClose))
-            return;
-
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#endif
-
-        Application.Quit();
     }
 }
